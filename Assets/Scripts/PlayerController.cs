@@ -32,11 +32,13 @@ public class PlayerController : MonoBehaviour
             {
                 _rb.velocity += new Vector2(0, jumpForce);
             }
+            /*
             else if (IsTouchingWall())
             {
-                var dir = IsTouchingLeftWall() ? -1 : 1;
+                var dir = IsTouchingLeftWall() ? 1 : -1;
                 _rb.velocity += new Vector2(jumpForce * 1.5f * dir, jumpForce / 1.5f);
             }
+            */
             _jumpTime = Time.time;
         }
         
