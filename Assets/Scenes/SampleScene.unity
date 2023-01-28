@@ -2101,9 +2101,9 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 1
+  m_LinearDrag: 0.8
   m_AngularDrag: 0.05
-  m_GravityScale: 1.5
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -2194,10 +2194,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da4ae377216d474889042f34df1fc7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpCooldown: 0.5
-  jumpForce: 11
+  jumpCooldown: 0.2
+  jumpForce: 15
   speed: 8
-  fallSpeed: 13
+  fallSpeed: 12
 --- !u!61 &1311379088
 BoxCollider2D:
   m_ObjectHideFlags: 0

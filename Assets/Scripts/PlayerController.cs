@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
             else if (IsTouchingWall())
             {
                 var dir = IsTouchingLeftWall() ? -1 : 1;
-                _rb.velocity = new Vector2(jumpForce * dir * 0.9f, jumpForce * 0.5f);
+                _rb.velocity = new Vector2(jumpForce * dir * 0.6f, jumpForce * 0.5f);
                 _wasWallJump = true;
             }
             _jumpTime = Time.time;
@@ -57,22 +57,22 @@ public class PlayerController : MonoBehaviour
     private void HandleMovement()
     {
         var s = IsGrounded() ? speed : speed / 3f;
-        if (Input.GetKey(KeyCode.S)) s *= 2.0f;
+        if (Input.GetKey(KeyCode.S)) s *= 1.8f;
         if (_wasWallJump && _jumpTime + jumpCooldown > Time.time)
         {
             // don't want to instantly be able to override direction on wall jump
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            _rb.velocity = new Vector2(Math.Max(s, _rb.velocity.x), _rb.velocity.y);
+            _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x,Math.Max(s, _rb.velocity.x), 0.8f), _rb.velocity.y);
         }
         else if (Input.GetKey(KeyCode.A))
         {
-            _rb.velocity = new Vector2(Math.Min(-s, _rb.velocity.x), _rb.velocity.y);
+            _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x, Math.Min(-s, _rb.velocity.x), 0.8f), _rb.velocity.y);
         }
         else if (IsGrounded())
         {  // if on the ground, stop moving horizontally
-            _rb.velocity = new Vector2(0, _rb.velocity.y);
+            _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x, 0, 0.3f), _rb.velocity.y);
         }
     }
 
