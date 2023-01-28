@@ -2196,7 +2196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpCooldown: 0.5
   jumpForce: 11
-  speed: 7
+  speed: 8
   fallSpeed: 13
 --- !u!61 &1311379088
 BoxCollider2D:

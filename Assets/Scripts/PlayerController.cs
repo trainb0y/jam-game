@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float fallSpeed;
     private Rigidbody2D _rb;
     private double _jumpTime;
+    private bool _wasWallJump = false;
 
     private void Start()
     {
@@ -19,9 +20,9 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HandleJump();
         HandleFall();
         HandleMovement();
+        HandleJump();
     }
 
     private void HandleJump()
@@ -31,14 +32,15 @@ public class PlayerController : MonoBehaviour
             if (IsGrounded())
             {
                 _rb.velocity += new Vector2(0, jumpForce);
+                _wasWallJump = false;
             }
-            /*
+            
             else if (IsTouchingWall())
             {
-                var dir = IsTouchingLeftWall() ? 1 : -1;
-                _rb.velocity += new Vector2(jumpForce * 1.5f * dir, jumpForce / 1.5f);
+                var dir = IsTouchingLeftWall() ? -1 : 1;
+                _rb.velocity = new Vector2(jumpForce * dir * 0.9f, jumpForce * 0.5f);
+                _wasWallJump = true;
             }
-            */
             _jumpTime = Time.time;
         }
         
@@ -56,8 +58,11 @@ public class PlayerController : MonoBehaviour
     {
         var s = IsGrounded() ? speed : speed / 3f;
         if (Input.GetKey(KeyCode.S)) s *= 2.0f;
-        
-        if (Input.GetKey(KeyCode.D))
+        if (_wasWallJump && _jumpTime + jumpCooldown > Time.time)
+        {
+            // don't want to instantly be able to override direction on wall jump
+        }
+        else if (Input.GetKey(KeyCode.D))
         {
             _rb.velocity = new Vector2(Math.Max(s, _rb.velocity.x), _rb.velocity.y);
         }
@@ -65,8 +70,8 @@ public class PlayerController : MonoBehaviour
         {
             _rb.velocity = new Vector2(Math.Min(-s, _rb.velocity.x), _rb.velocity.y);
         }
-        else
-        {
+        else if (IsGrounded())
+        {  // if on the ground, stop moving horizontally
             _rb.velocity = new Vector2(0, _rb.velocity.y);
         }
     }
