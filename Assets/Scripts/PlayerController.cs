@@ -1,81 +1,141 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private double jumpCooldown;
-    [SerializeField] private float jumpForce;
-    [SerializeField] private float speed;
-    [SerializeField] private float fallSpeed;
+    [SerializeField] private PlayerMovement mov;
+    [SerializeField] private State state;
+    [SerializeField] private float stateStartTime;
+    
     private Rigidbody2D _rb;
-    private double _jumpTime;
-    private bool _wasWallJump = false;
+    private bool facingLeft = false;
+
 
     private void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
     }
 
+    private enum State
+    {
+        Idle,
+        Jump,
+        Falling,
+        Walking,
+        WallJump
+    }
+
     private void FixedUpdate()
     {
-        HandleFall();
-        HandleMovement();
-        HandleJump();
+        ProcessStateChanges();
+        ProcessInput();
+        ProcessMovement();
     }
 
-    private void HandleJump()
+    private void ProcessInput()
     {
-        if (Input.GetKey(KeyCode.W) && Time.time > _jumpTime + jumpCooldown)
+        if (Input.GetKey(KeyCode.W) && IsGrounded() && (state == State.Idle || state == State.Walking))
         {
-            if (IsGrounded())
-            {
-                _rb.velocity += new Vector2(0, jumpForce);
-                _wasWallJump = false;
-            }
-            
-            else if (IsTouchingWall())
-            {
-                var dir = IsTouchingLeftWall() ? -1 : 1;
-                _rb.velocity = new Vector2(jumpForce * dir * 0.9f, jumpForce * 0.5f);
-                _wasWallJump = true;
-            }
-            _jumpTime = Time.time;
+            state = State.Jump;
+            stateStartTime = Time.time;
+        }
+        if (Input.GetKey(KeyCode.A) && state == State.Idle)
+        {
+            state = State.Walking;
+            stateStartTime = Time.time;
+            facingLeft = true;
+        }
+        if (Input.GetKey(KeyCode.D) && state == State.Idle)
+        {
+            state = State.Walking;
+            stateStartTime = Time.time;
+            facingLeft = false;
+        }
+    }
+
+
+    private void ProcessStateChanges()
+    {
+        if (_rb.velocity.sqrMagnitude < mov.idleCutoff && (state == State.Falling || state == State.Walking))
+        {
+            state = State.Idle;
+            stateStartTime = Time.time;
         }
         
-    }
+        if (state == State.Jump && Time.time - stateStartTime > mov.jumpCurve[mov.jumpCurve.length - 1].time)
+        {
+            // Jump is over, revert to idle
+            state = State.Idle;
+            stateStartTime = Time.time;
+        }
 
-    private void HandleFall()
+        if (state != State.Jump && state != State.WallJump && !IsGrounded())
+        {
+            // Not jumping, but we're in the air, so we're falling
+            state = State.Falling;
+            stateStartTime = Time.time;
+        }
+        
+        if ((state == State.Falling || state == State.Jump) && IsGrounded())
+        {
+            // Was falling or jumping but we hit the ground, so revert
+            state = State.Idle;
+            stateStartTime = Time.time;
+        }
+    }
+    
+
+    private void ProcessMovement()
     {
-        if (Input.GetKey(KeyCode.S))
+        if (state == State.Jump)
         {
-            _rb.velocity = new Vector2(_rb.velocity.x, -fallSpeed);
+            var stateDuration = mov.jumpCurve[mov.jumpCurve.length - 1].time;
+            if (Time.time - stateStartTime > stateDuration)
+            {
+                state = State.Idle;
+                stateStartTime = Time.time;
+            }
+            else
+            {
+                _rb.velocity = new Vector2(
+                    _rb.velocity.x,
+                    mov.jumpCurve.Evaluate((Time.time - stateStartTime) / stateDuration)
+                );   
+            }
+        }
+
+        if (state == State.Walking)
+        {
+            
+        }
+
+        if (state == State.Falling)
+        {
+            _rb.velocity = new Vector2(
+                _rb.velocity.x,
+                mov.fallSpeed
+            );   
         }
     }
 
-    private void HandleMovement()
-    {
-        var s = IsGrounded() ? speed : speed / 3f;
-        if (Input.GetKey(KeyCode.S)) s *= 2.0f;
-        if (_wasWallJump && _jumpTime + jumpCooldown > Time.time)
-        {
-            // don't want to instantly be able to override direction on wall jump
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            _rb.velocity = new Vector2(Math.Max(s, _rb.velocity.x), _rb.velocity.y);
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            _rb.velocity = new Vector2(Math.Min(-s, _rb.velocity.x), _rb.velocity.y);
-        }
-        else if (IsGrounded())
-        {  // if on the ground, stop moving horizontally
-            _rb.velocity = new Vector2(0, _rb.velocity.y);
-        }
-    }
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     private bool IsGrounded()
     {
         var pos = transform.position - new Vector3(0, 0.8f, 0f);
