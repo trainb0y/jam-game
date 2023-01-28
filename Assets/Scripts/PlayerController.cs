@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleJump()
     {
-        if (Input.GetKey(KeyCode.W) && Time.time > _jumpTime + jumpCooldown)
+        if (Input.GetKeyDown(KeyCode.W) && Time.time > _jumpTime + jumpCooldown)
         {
             if (IsGrounded())
             {
