@@ -9,8 +9,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce;
     [SerializeField] private float speed;
     [SerializeField] private float fallSpeed;
+    [SerializeField] private PhysicsMaterial2D bounceMat;
     private Rigidbody2D _rb;
     private double _jumpTime;
+    private double _bounceTime;
     private bool _wasWallJump = false;
 
     private void Start()
@@ -23,6 +25,14 @@ public class PlayerController : MonoBehaviour
         HandleFall();
         HandleMovement();
         HandleJump();
+    }
+
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.GetComponent<Rigidbody2D>().sharedMaterial == bounceMat)
+        {
+            _bounceTime = Time.time;
+        }
     }
 
     private void HandleJump()
@@ -48,7 +58,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleFall()
     {
-        if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.S) && _bounceTime + 0.2 < Time.time)
         {
             _rb.velocity = new Vector2(_rb.velocity.x, -fallSpeed);
         }
@@ -56,6 +66,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
+        if (_bounceTime + 0.2 > Time.time) return;
         var s = IsGrounded() ? speed : speed / 3f;
         if (Input.GetKey(KeyCode.S)) s *= 1.8f;
         if (_wasWallJump && _jumpTime + jumpCooldown > Time.time)
