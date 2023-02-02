@@ -2218,9 +2218,13 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 9202597216706087052, guid: 255cfee09b4cd088690ba9bce948644b, type: 3}
+      propertyPath: m_Size.y
+      value: 0.88125
+      objectReference: {fileID: 0}
+    - target: {fileID: 9202597216706087052, guid: 255cfee09b4cd088690ba9bce948644b, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -1003264928, guid: 93c50cab366a2fc4f9fca6a67aa3e1d6, type: 3}
+      objectReference: {fileID: 2017128770, guid: cd5518dd880e4254783e8d5e4bd7e120, type: 3}
     - target: {fileID: 9202597216706087055, guid: 255cfee09b4cd088690ba9bce948644b, type: 3}
       propertyPath: m_RootOrder
       value: 3
