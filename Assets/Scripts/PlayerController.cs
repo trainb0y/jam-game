@@ -12,10 +12,13 @@ public class PlayerController : MonoBehaviour
     private double _jumpTime;
     private Rigidbody2D _rb;
     private bool _wasWallJump;
+    
+    private Animator animation;
 
     private void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        animation = GetComponent<Animator>();
     }
 
     private void FixedUpdate()
@@ -23,6 +26,9 @@ public class PlayerController : MonoBehaviour
         HandleFall();
         HandleMovement();
         HandleJump();
+        if(!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S)){
+            animation.SetBool("Run", false);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D col)
@@ -54,6 +60,7 @@ public class PlayerController : MonoBehaviour
             }
 
             _jumpTime = Time.time;
+            animation.SetTrigger("Jump");
         }
     }
 
@@ -75,10 +82,12 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKey(KeyCode.D))
         {
             _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x, Math.Max(s, _rb.velocity.x), 0.8f), _rb.velocity.y);
+            animation.SetBool("Run", true);
         }
         else if (Input.GetKey(KeyCode.A))
         {
             _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x, Math.Min(-s, _rb.velocity.x), 0.8f), _rb.velocity.y);
+            animation.SetBool("Run", true);
         }
         else if (IsGrounded())
         {
