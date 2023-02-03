@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -10,14 +8,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float fallSpeed;
     [SerializeField] private PhysicsMaterial2D bounceMat;
-    private Rigidbody2D _rb;
-    private double _jumpTime;
     private double _bounceTime;
-    private bool _wasWallJump = false;
+    private double _jumpTime;
+    private Rigidbody2D _rb;
+    private bool _wasWallJump;
+    
+    private Animator animation;
 
     private void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        animation = GetComponent<Animator>();
     }
 
     private void FixedUpdate()
@@ -25,12 +26,16 @@ public class PlayerController : MonoBehaviour
         HandleFall();
         HandleMovement();
         HandleJump();
+        if(!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S)){
+            animation.SetBool("Run", false);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.GetComponent<Rigidbody2D>().sharedMaterial == bounceMat)
         {
+            // todo: play bounce sound
             _bounceTime = Time.time;
         }
     }
@@ -43,25 +48,26 @@ public class PlayerController : MonoBehaviour
             {
                 _rb.velocity += new Vector2(0, jumpForce);
                 _wasWallJump = false;
+                // todo: play jump sound
             }
-            
+
             else if (IsTouchingWall())
             {
                 var dir = IsTouchingLeftWall() ? -1 : 1;
                 _rb.velocity = new Vector2(jumpForce * dir * 0.6f, jumpForce * 0.5f);
                 _wasWallJump = true;
+                // todo: play jump sound
             }
+
             _jumpTime = Time.time;
+            animation.SetTrigger("Jump");
         }
-        
     }
 
     private void HandleFall()
     {
         if (Input.GetKey(KeyCode.S) && _bounceTime + 0.2 < Time.time)
-        {
             _rb.velocity = new Vector2(_rb.velocity.x, -fallSpeed);
-        }
     }
 
     private void HandleMovement()
@@ -75,22 +81,31 @@ public class PlayerController : MonoBehaviour
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x,Math.Max(s, _rb.velocity.x), 0.8f), _rb.velocity.y);
+            _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x, Math.Max(s, _rb.velocity.x), 0.8f), _rb.velocity.y);
+            animation.SetBool("Run", true);
         }
         else if (Input.GetKey(KeyCode.A))
         {
             _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x, Math.Min(-s, _rb.velocity.x), 0.8f), _rb.velocity.y);
+            animation.SetBool("Run", true);
         }
         else if (IsGrounded())
-        {  // if on the ground, stop moving horizontally
+        {
+            // if on the ground, stop moving horizontally
             _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x, 0, 0.3f), _rb.velocity.y);
         }
     }
 
     private bool IsGrounded()
     {
-        var pos = transform.position - new Vector3(0, 0.8f, 0f);
-        return Physics2D.OverlapPoint(pos) != null;
+        return IsTouching(new Vector3(0, -0.8f, 0));
+    }
+
+    private bool IsTouching(Vector3 offset)
+    {
+        var pos = transform.position + offset;
+        var point = Physics2D.OverlapPoint(pos);
+        return point != null && point.attachedRigidbody != null && point.attachedRigidbody.simulated;
     }
 
     private bool IsTouchingWall()
@@ -100,13 +115,11 @@ public class PlayerController : MonoBehaviour
 
     private bool IsTouchingLeftWall()
     {
-        var pos = transform.position - new Vector3(-0.4f, 0f, 0f);
-        return Physics2D.OverlapPoint(pos) != null;
+        return IsTouching(new Vector3(0.4f, 0f, 0f));
     }
 
     private bool IsTouchingRightWall()
     {
-        var pos = transform.position - new Vector3(0.4f, 0f, 0f);
-        return Physics2D.OverlapPoint(pos) != null;
+        return IsTouching(new Vector3(-0.4f, 0f, 0f));
     }
 }

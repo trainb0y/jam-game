@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class RespawnController : MonoBehaviour
@@ -11,12 +10,12 @@ public class RespawnController : MonoBehaviour
         transform.position = respawnPoint.position;
     }
 
-    void Update()
+    private void Update()
     {
         if (transform.position.y < deathYLevel)
         {
             transform.position = respawnPoint.position;
             GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-        }   
+        }
     }
 }
