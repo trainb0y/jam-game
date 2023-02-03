@@ -83,8 +83,14 @@ public class PlayerController : MonoBehaviour
 
     private bool IsGrounded()
     {
-        var pos = transform.position - new Vector3(0, 0.8f, 0f);
-        return Physics2D.OverlapPoint(pos) != null;
+        return IsTouching(new Vector3(0, -0.8f, 0));
+    }
+
+    private bool IsTouching(Vector3 offset)
+    {
+        var pos = transform.position + offset;
+        var point = Physics2D.OverlapPoint(pos);
+        return point != null && point.attachedRigidbody != null && point.attachedRigidbody.simulated;
     }
 
     private bool IsTouchingWall()
@@ -94,13 +100,11 @@ public class PlayerController : MonoBehaviour
 
     private bool IsTouchingLeftWall()
     {
-        var pos = transform.position - new Vector3(-0.4f, 0f, 0f);
-        return Physics2D.OverlapPoint(pos) != null;
+        return IsTouching(new Vector3(0.4f, 0f, 0f));
     }
 
     private bool IsTouchingRightWall()
     {
-        var pos = transform.position - new Vector3(0.4f, 0f, 0f);
-        return Physics2D.OverlapPoint(pos) != null;
+        return IsTouching(new Vector3(-0.4f, 0f, 0f));
     }
 }
