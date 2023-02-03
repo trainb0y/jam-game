@@ -27,7 +27,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject.GetComponent<Rigidbody2D>().sharedMaterial == bounceMat) _bounceTime = Time.time;
+        if (col.gameObject.GetComponent<Rigidbody2D>().sharedMaterial == bounceMat)
+        {
+            // todo: play bounce sound
+            _bounceTime = Time.time;
+        }
     }
 
     private void HandleJump()
@@ -38,6 +42,7 @@ public class PlayerController : MonoBehaviour
             {
                 _rb.velocity += new Vector2(0, jumpForce);
                 _wasWallJump = false;
+                // todo: play jump sound
             }
 
             else if (IsTouchingWall())
@@ -45,6 +50,7 @@ public class PlayerController : MonoBehaviour
                 var dir = IsTouchingLeftWall() ? -1 : 1;
                 _rb.velocity = new Vector2(jumpForce * dir * 0.6f, jumpForce * 0.5f);
                 _wasWallJump = true;
+                // todo: play jump sound
             }
 
             _jumpTime = Time.time;
