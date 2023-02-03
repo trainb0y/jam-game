@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -10,10 +8,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float fallSpeed;
     [SerializeField] private PhysicsMaterial2D bounceMat;
-    private Rigidbody2D _rb;
-    private double _jumpTime;
     private double _bounceTime;
-    private bool _wasWallJump = false;
+    private double _jumpTime;
+    private Rigidbody2D _rb;
+    private bool _wasWallJump;
 
     private void Start()
     {
@@ -29,10 +27,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject.GetComponent<Rigidbody2D>().sharedMaterial == bounceMat)
-        {
-            _bounceTime = Time.time;
-        }
+        if (col.gameObject.GetComponent<Rigidbody2D>().sharedMaterial == bounceMat) _bounceTime = Time.time;
     }
 
     private void HandleJump()
@@ -44,24 +39,22 @@ public class PlayerController : MonoBehaviour
                 _rb.velocity += new Vector2(0, jumpForce);
                 _wasWallJump = false;
             }
-            
+
             else if (IsTouchingWall())
             {
                 var dir = IsTouchingLeftWall() ? -1 : 1;
                 _rb.velocity = new Vector2(jumpForce * dir * 0.6f, jumpForce * 0.5f);
                 _wasWallJump = true;
             }
+
             _jumpTime = Time.time;
         }
-        
     }
 
     private void HandleFall()
     {
         if (Input.GetKey(KeyCode.S) && _bounceTime + 0.2 < Time.time)
-        {
             _rb.velocity = new Vector2(_rb.velocity.x, -fallSpeed);
-        }
     }
 
     private void HandleMovement()
@@ -75,14 +68,15 @@ public class PlayerController : MonoBehaviour
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x,Math.Max(s, _rb.velocity.x), 0.8f), _rb.velocity.y);
+            _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x, Math.Max(s, _rb.velocity.x), 0.8f), _rb.velocity.y);
         }
         else if (Input.GetKey(KeyCode.A))
         {
             _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x, Math.Min(-s, _rb.velocity.x), 0.8f), _rb.velocity.y);
         }
         else if (IsGrounded())
-        {  // if on the ground, stop moving horizontally
+        {
+            // if on the ground, stop moving horizontally
             _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x, 0, 0.3f), _rb.velocity.y);
         }
     }

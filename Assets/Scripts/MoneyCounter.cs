@@ -6,7 +6,7 @@ public class MoneyCounter : MonoBehaviour
     [SerializeField] private TextMeshProUGUI display;
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         display.text = Mathf.RoundToInt(Time.time).ToString();
     }
