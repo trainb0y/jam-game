@@ -45,6 +45,9 @@ public class PlayerController : MonoBehaviour
             GlobalData.Instance.cashAmount -= 10;
             p.Stop();
             p.Play();
+            var cam = Camera.main.GetComponent<CameraFollow>();
+            cam.screenshakeUntil = Time.time + 0.2f;
+            cam.screenshakeIntensityMultiplier = 0.4f;
         }
     }
 

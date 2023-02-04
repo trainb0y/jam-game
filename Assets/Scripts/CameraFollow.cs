@@ -9,6 +9,9 @@ public class CameraFollow : MonoBehaviour
 
     private Vector3 _velocity = Vector3.zero;
 
+    public float screenshakeUntil = 0;
+    public float screenshakeIntensityMultiplier;
+
     private void LateUpdate()
     {
         var smooth = Vector3.SmoothDamp(transform.position, target.position, ref _velocity, speed);
@@ -17,5 +20,11 @@ public class CameraFollow : MonoBehaviour
             Mathf.Clamp(smooth.y, minBound.y, maxBound.y),
             transform.position.z
         );
+
+        if (screenshakeUntil > Time.time)
+        {
+            var pos = Random.insideUnitCircle * screenshakeIntensityMultiplier;
+            transform.position += new Vector3(pos.x, pos.y, 0);
+        }
     }
 }
