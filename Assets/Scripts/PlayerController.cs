@@ -38,6 +38,14 @@ public class PlayerController : MonoBehaviour
             // todo: play bounce sound
             _bounceTime = Time.time;
         }
+        else if ( col.relativeVelocity.magnitude > 14)
+        {
+            // todo: play oof sound
+            var p = GetComponent<ParticleSystem>();
+            GlobalData.Instance.cashAmount -= 10;
+            p.Stop();
+            p.Play();
+        }
     }
 
     private void HandleJump()
