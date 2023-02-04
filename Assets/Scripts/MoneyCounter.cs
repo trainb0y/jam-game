@@ -1,14 +1,19 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 
 public class MoneyCounter : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI display;
+    private TextMeshProUGUI _display;
 
     public int lastTime;
-    
-    // Update is called once per frame
+
+    private void Start()
+    {
+        _display = GetComponent<TextMeshProUGUI>();
+    }
+
     private void Update()
     {
         var time = Mathf.FloorToInt(Time.time);
@@ -17,6 +22,6 @@ public class MoneyCounter : MonoBehaviour
             GlobalData.Instance.cashAmount--;
             lastTime = time;
         }
-        display.text = GlobalData.Instance.cashAmount.ToString();
+        _display.text = GlobalData.Instance.cashAmount.ToString();
     }
 }
