@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return IsTouching(new Vector3(0, -0.8f, 0));
+        return IsTouching(new Vector3(0, -1f, 0));
     }
 
     private bool IsTouching(Vector3 offset)
@@ -115,11 +115,11 @@ public class PlayerController : MonoBehaviour
 
     private bool IsTouchingLeftWall()
     {
-        return IsTouching(new Vector3(0.4f, 0f, 0f));
+        return IsTouching(new Vector3(0.7f, 0f, 0f));
     }
 
     private bool IsTouchingRightWall()
     {
-        return IsTouching(new Vector3(-0.4f, 0f, 0f));
+        return IsTouching(new Vector3(-0.7f, 0f, 0f));
     }
 }
