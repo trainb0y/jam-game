@@ -5,9 +5,11 @@ public class MoneyCounter : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI display;
 
+    public int amount;
+    
     // Update is called once per frame
     private void Update()
     {
-        display.text = Mathf.RoundToInt(Time.time).ToString();
+        display.text = amount.ToString();
     }
 }
