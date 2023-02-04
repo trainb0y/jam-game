@@ -38,8 +38,12 @@ public class CashPickup : MonoBehaviour
         var cont = col.GetComponent<PlayerController>();
         if (cont != null)
         {
+            var cam = Camera.main.GetComponent<CameraFollow>();
+            cam.screenshakeUntil = Time.time + 0.3f;
+            cam.screenshakeIntensityMultiplier = 0.10f;
             GlobalData.Instance.cashAmount += moneyAmount;
             _shrinking = true;
+            // todo: play pickup sound
         }
     }
 }
