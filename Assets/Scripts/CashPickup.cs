@@ -6,7 +6,7 @@ using UnityEngine.Rendering.Universal;
 
 public class CashPickup : MonoBehaviour
 {
-    [SerializeField] private int moneyAmount = 100;
+    [SerializeField] private int moneyAmount = 200;
     
     private bool _shrinking = false;
     private Light2D _light;
