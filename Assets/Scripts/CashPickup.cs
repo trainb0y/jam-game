@@ -7,15 +7,13 @@ using UnityEngine.Rendering.Universal;
 public class CashPickup : MonoBehaviour
 {
     [SerializeField] private int moneyAmount = 100;
-
-    private MoneyCounter _counter;
+    
     private bool _shrinking = false;
     private Light2D _light;
 
     private void Start()
     {
         _light = GetComponent<Light2D>();
-        _counter = FindObjectOfType<MoneyCounter>();
     }
 
     private void Update()
@@ -40,7 +38,7 @@ public class CashPickup : MonoBehaviour
         var cont = col.GetComponent<PlayerController>();
         if (cont != null)
         {
-            _counter.amount += moneyAmount;
+            GlobalData.Instance.cashAmount += moneyAmount;
             _shrinking = true;
         }
     }
