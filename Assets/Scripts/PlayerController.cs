@@ -46,20 +46,36 @@ public class PlayerController : MonoBehaviour
             p.Stop();
             p.Play();
             var cam = Camera.main.GetComponent<CameraFollow>();
-            cam.screenshakeUntil = Time.time + 0.2f;
-            cam.screenshakeIntensityMultiplier = 0.4f;
+            cam.screenshakeUntil = Time.time + 0.25f;
+            cam.screenshakeIntensityMultiplier = 0.45f;
+        }
+        else if ( col.relativeVelocity.magnitude > 10)
+        {
+            var cam = Camera.main.GetComponent<CameraFollow>();
+            cam.screenshakeUntil = Time.time + 0.15f;
+            cam.screenshakeIntensityMultiplier = 0.15f;
         }
     }
 
     private void HandleJump()
     {
+        void AfterJump()
+        {
+            _jumpTime = Time.time;
+            animation.SetTrigger("Jump");
+            var cam = Camera.main.GetComponent<CameraFollow>();
+            cam.screenshakeUntil = Time.time + 0.1f;
+            cam.screenshakeIntensityMultiplier = 0.15f;
+            // todo: play jump sound
+        }
+        
         if (Input.GetKeyDown(KeyCode.W) && Time.time > _jumpTime + jumpCooldown)
         {
             if (IsGrounded())
             {
                 _rb.velocity += new Vector2(0, jumpForce);
                 _wasWallJump = false;
-                // todo: play jump sound
+                AfterJump();
             }
 
             else if (IsTouchingWall())
@@ -67,11 +83,8 @@ public class PlayerController : MonoBehaviour
                 var dir = IsTouchingLeftWall() ? -1 : 1;
                 _rb.velocity = new Vector2(jumpForce * dir * 0.6f, jumpForce * 0.5f);
                 _wasWallJump = true;
-                // todo: play jump sound
+                AfterJump();
             }
-
-            _jumpTime = Time.time;
-            animation.SetTrigger("Jump");
         }
     }
 
