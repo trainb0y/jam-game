@@ -8,17 +8,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float fallSpeed;
     [SerializeField] private PhysicsMaterial2D bounceMat;
+
+    [SerializeField] private AudioClip jump;
+    [SerializeField] private AudioClip oof;
+    private AudioSource _audio;
+    
     private double _bounceTime;
     private double _jumpTime;
     private Rigidbody2D _rb;
     private bool _wasWallJump;
     
-    private Animator animation;
+    private Animator _animation;
 
     private void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
-        animation = GetComponent<Animator>();
+        _animation = GetComponent<Animator>();
+        _audio = GetComponent<AudioSource>();
     }
 
     private void FixedUpdate()
@@ -27,7 +33,7 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleJump();
         if(!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S)){
-            animation.SetBool("Run", false);
+            _animation.SetBool("Run", false);
         }
     }
 
@@ -35,12 +41,13 @@ public class PlayerController : MonoBehaviour
     {
         if (col.gameObject.GetComponent<Rigidbody2D>().sharedMaterial == bounceMat)
         {
-            // todo: play bounce sound
             _bounceTime = Time.time;
         }
         else if ( col.relativeVelocity.magnitude > 14)
         {
-            // todo: play oof sound
+            _audio.Stop();
+            _audio.clip = oof;
+            _audio.Play();
             var p = GetComponent<ParticleSystem>();
             GlobalData.Instance.cashAmount -= 10;
             p.Stop();
@@ -62,11 +69,13 @@ public class PlayerController : MonoBehaviour
         void AfterJump()
         {
             _jumpTime = Time.time;
-            animation.SetTrigger("Jump");
+            _animation.SetTrigger("Jump");
             var cam = Camera.main.GetComponent<CameraFollow>();
             cam.screenshakeUntil = Time.time + 0.1f;
             cam.screenshakeIntensityMultiplier = 0.15f;
-            // todo: play jump sound
+            _audio.Stop();
+            _audio.clip = jump;
+            _audio.Play();
         }
         
         if (Input.GetKeyDown(KeyCode.W) && Time.time > _jumpTime + jumpCooldown)
@@ -106,12 +115,12 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKey(KeyCode.D))
         {
             _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x, Math.Max(s, _rb.velocity.x), 0.8f), _rb.velocity.y);
-            animation.SetBool("Run", true);
+            _animation.SetBool("Run", true);
         }
         else if (Input.GetKey(KeyCode.A))
         {
             _rb.velocity = new Vector2(Mathf.Lerp(_rb.velocity.x, Math.Min(-s, _rb.velocity.x), 0.8f), _rb.velocity.y);
-            animation.SetBool("Run", true);
+            _animation.SetBool("Run", true);
         }
         else if (IsGrounded())
         {

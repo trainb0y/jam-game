@@ -19,7 +19,10 @@ public class EndPoint : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.GetComponent<PlayerController>() != null)
+        {
             // move to next scene
             counter += Time.deltaTime;
+            GetComponent<AudioSource>().Play();
+        }
     }
 }

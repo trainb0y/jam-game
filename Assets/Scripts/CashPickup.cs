@@ -43,7 +43,7 @@ public class CashPickup : MonoBehaviour
             cam.screenshakeIntensityMultiplier = 0.10f;
             GlobalData.Instance.cashAmount += moneyAmount;
             _shrinking = true;
-            // todo: play pickup sound
+            GetComponent<AudioSource>().Play();
         }
     }
 }

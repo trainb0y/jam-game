@@ -15,6 +15,7 @@ public class BoxExplosion : MonoBehaviour
             GetComponent<BoxCollider2D>().enabled = false;
             Destroy(gameObject, 4);
             GlobalData.Instance.cashAmount += 10;
+            GetComponent<AudioSource>().Play();
         }
     }
 }
