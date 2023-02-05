@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return IsTouching(new Vector3(0, -1f, 0));
+        return IsTouching(new Vector3(0, -1f, 0)) || IsTouching(new Vector3(-0.4f, -1f, 0f)) || IsTouching(new Vector3(0.4f, -1f, 0f));
     }
 
     private bool IsTouching(Vector3 offset)
