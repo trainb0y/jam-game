@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -20,6 +21,13 @@ public class MoneyCounter : MonoBehaviour
             lastTime = time;
         }
 
-        _display.text = GlobalData.Instance.cashAmount.ToString();
+        try
+        {
+            _display.text = GlobalData.Instance.cashAmount.ToString();
+        }
+        catch (NullReferenceException)
+        {
+            // hacky fix so we can actually export and submit this thing.
+        }
     }
 }
