@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour
         {
             _bounceTime = Time.time;
         }
-        else if (col.relativeVelocity.magnitude > 14)
+        else if (col.relativeVelocity.magnitude > 14 && col.gameObject.GetComponent<BoxExplosion>() == null)
         {
             _audio.Stop();
             _audio.clip = oof;
