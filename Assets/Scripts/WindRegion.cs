@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
@@ -13,24 +12,18 @@ public class WindRegion : MonoBehaviour
         _audio = GetComponent<AudioSource>();
     }
 
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        other.GetComponent<Rigidbody2D>().velocity += wind;
-    }
-
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.GetComponent<PlayerController>() != null)
-        {
-            _audio.Play();
-        }
+        if (col.GetComponent<PlayerController>() != null) _audio.Play();
     }
 
     private void OnTriggerExit2D(Collider2D col)
     {
-        if (col.GetComponent<PlayerController>() != null)
-        {
-            _audio.Stop();
-        }
+        if (col.GetComponent<PlayerController>() != null) _audio.Stop();
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        other.GetComponent<Rigidbody2D>().velocity += wind;
     }
 }

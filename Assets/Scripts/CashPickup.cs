@@ -1,15 +1,12 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 public class CashPickup : MonoBehaviour
 {
     [SerializeField] private int moneyAmount = 200;
-    
-    private bool _shrinking = false;
     private Light2D _light;
+
+    private bool _shrinking;
 
     private void Start()
     {
@@ -26,10 +23,7 @@ public class CashPickup : MonoBehaviour
                 transform.localScale.z
             );
             _light.intensity -= Time.deltaTime * 2;
-            if (transform.localScale.x < 0.05)
-            {
-                Destroy(gameObject);
-            }
+            if (transform.localScale.x < 0.05) Destroy(gameObject);
         }
     }
 

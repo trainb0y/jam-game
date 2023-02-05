@@ -7,10 +7,10 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private float speed;
 
-    private Vector3 _velocity = Vector3.zero;
-
-    public float screenshakeUntil = 0;
+    public float screenshakeUntil;
     public float screenshakeIntensityMultiplier;
+
+    private Vector3 _velocity = Vector3.zero;
 
     private void LateUpdate()
     {

@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class CloudManager : MonoBehaviour
@@ -8,7 +5,8 @@ public class CloudManager : MonoBehaviour
     [SerializeField] private double cutoff;
     [SerializeField] private float yLevel;
     [SerializeField] private GameObject cloudPrefab;
-    void Update()
+
+    private void Update()
     {
         if (Random.value * Time.deltaTime > cutoff) // todo: wrong place for deltatime
         {
@@ -21,13 +19,12 @@ public class CloudManager : MonoBehaviour
             n.GetComponent<CloudMover>().speed = Random.value * 3;
             n.transform.SetParent(gameObject.transform);
         }
+
         foreach (var child in GetComponentsInChildren<CloudMover>())
-        {
             if (child.transform.position.x > Camera.main.transform.position.x + 30)
             {
                 Destroy(child);
                 print("killed a child");
             }
-        }
     }
 }

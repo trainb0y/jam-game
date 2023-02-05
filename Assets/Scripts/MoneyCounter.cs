@@ -1,13 +1,10 @@
-using System;
-using System.Collections;
 using TMPro;
 using UnityEngine;
 
 public class MoneyCounter : MonoBehaviour
 {
-    private TextMeshProUGUI _display;
-
     public int lastTime;
+    private TextMeshProUGUI _display;
 
     private void Start()
     {
@@ -22,6 +19,7 @@ public class MoneyCounter : MonoBehaviour
             GlobalData.Instance.cashAmount--;
             lastTime = time;
         }
+
         _display.text = GlobalData.Instance.cashAmount.ToString();
     }
 }

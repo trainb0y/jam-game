@@ -11,14 +11,14 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private AudioClip jump;
     [SerializeField] private AudioClip oof;
+
+    private Animator _animation;
     private AudioSource _audio;
-    
+
     private double _bounceTime;
     private double _jumpTime;
     private Rigidbody2D _rb;
     private bool _wasWallJump;
-    
-    private Animator _animation;
 
     private void Start()
     {
@@ -32,9 +32,8 @@ public class PlayerController : MonoBehaviour
         HandleFall();
         HandleMovement();
         HandleJump();
-        if(!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S)){
-            _animation.SetBool("Run", false);
-        }
+        if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.W) &&
+            !Input.GetKey(KeyCode.S)) _animation.SetBool("Run", false);
     }
 
     private void OnCollisionEnter2D(Collision2D col)
@@ -43,7 +42,7 @@ public class PlayerController : MonoBehaviour
         {
             _bounceTime = Time.time;
         }
-        else if ( col.relativeVelocity.magnitude > 14)
+        else if (col.relativeVelocity.magnitude > 14)
         {
             _audio.Stop();
             _audio.clip = oof;
@@ -56,7 +55,7 @@ public class PlayerController : MonoBehaviour
             cam.screenshakeUntil = Time.time + 0.25f;
             cam.screenshakeIntensityMultiplier = 0.45f;
         }
-        else if ( col.relativeVelocity.magnitude > 10)
+        else if (col.relativeVelocity.magnitude > 10)
         {
             var cam = Camera.main.GetComponent<CameraFollow>();
             cam.screenshakeUntil = Time.time + 0.15f;
@@ -77,7 +76,7 @@ public class PlayerController : MonoBehaviour
             _audio.clip = jump;
             _audio.Play();
         }
-        
+
         if (Input.GetKeyDown(KeyCode.W) && Time.time > _jumpTime + jumpCooldown)
         {
             if (IsGrounded())
